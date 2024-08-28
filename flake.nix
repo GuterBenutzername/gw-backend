@@ -1,7 +1,7 @@
 {
   description = "A Nix-flake-based Go 1.22 development environment";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs:unstable"
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
   outputs = { self, nixpkgs }:
     let
