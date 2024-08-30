@@ -2,8 +2,6 @@
 
 set -eu
 
-client_pid=$PPID
-
 start_postgres() {
     if postgres_is_stopped
     then
@@ -21,7 +19,6 @@ postgres_is_stopped() {
 
 case "$1" in
     add)
-        mkdir -p nix/pids touch nix/pids/$client_pid
         if [ -d "$PGDATA" ]
         then
             start_postgres
@@ -30,7 +27,6 @@ case "$1" in
         fi
         ;;
     remove)
-        rm nix/pids/$client_pid
         if [ -n "$(find nix/pids -prune -empty)" ]
         then
             pg_ctl stop --silent -W

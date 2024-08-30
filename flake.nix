@@ -26,12 +26,19 @@
         ];
       shellHook = let cleanUp = shell_commands:
         ''
+	export LANG=en_US.UTF-8 
+           export PGDATABASE=gw 
+           export PGDATA="$PWD/pg/pgdata" 
+           export PGHOST="$PWD/pg/sockets" 
+           export PGPORT="5433" 
+           export PGUSER="$USER"
+	   export logfile="$PWD/pg/logs" 
           trap \
           "
           ${ builtins.concatStringsSep "" shell_commands }
           " \
           EXIT
-	  ./postgres_init.sh
+	  ./postgres_init.sh add
         ''; in 
      		cleanUp [
       ''
