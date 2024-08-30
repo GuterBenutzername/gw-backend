@@ -1,38 +1,33 @@
 {
-  description = "A Nix-flake-based Go 1.22 development environment";
+  description = "gw-backend development environment";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs.arion.url = "github:hercules-ci/arion";
 
-  outputs = { self, nixpkgs }:
-    let
-      goVersion = 22; # Change this to update the whole stack
+  outputs = {
+    self,
+    nixpkgs,
+    arion,
+  }: let
+    supportedSystems = ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"];
+    forEachSupportedSystem = f:
+      nixpkgs.lib.genAttrs supportedSystems (system:
+        f {
+          pkgs = import nixpkgs {
+            inherit system;
+          };
+        });
+  in {
+    devShells = forEachSupportedSystem ({pkgs}: {
+      default = pkgs.mkShell {
+        packages = with pkgs; [
+          go
+          gotools
+          golangci-lint
 
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
-      forEachSupportedSystem = f: nixpkgs.lib.genAttrs supportedSystems (system: f {
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [ self.overlays.default ];
-        };
-      });
-    in
-    {
-      overlays.default = final: prev: {
-        go = final."go_1_${toString goVersion}";
+          arion.packages."${system}".default
+        ];
       };
-
-      devShells = forEachSupportedSystem ({ pkgs }: {
-        default = pkgs.mkShell {
-          packages = with pkgs; [
-            # go (version is specified by overlay)
-            go
-
-            # goimports, godoc, etc.
-            gotools
-
-            # https://github.com/golangci/golangci-lint
-            golangci-lint
-          ];
-        };
-      });
-    };
+    });
+  };
 }
