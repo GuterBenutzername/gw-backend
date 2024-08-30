@@ -2,12 +2,10 @@
   description = "gw-backend development environment";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-  inputs.arion.url = "github:hercules-ci/arion";
 
   outputs = {
     self,
     nixpkgs,
-    arion,
   }: let
     supportedSystems = ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"];
     forEachSupportedSystem = f:
@@ -24,9 +22,26 @@
           go
           gotools
           golangci-lint
-
-          arion.packages."${system}".default
+	  postgresql
         ];
+      shellHook = let cleanUp = shell_commands:
+        ''
+          trap \
+          "
+          ${ builtins.concatStringsSep "" shell_commands }
+          " \
+          EXIT
+	  ./postgres_init.sh
+        ''; in 
+     		cleanUp [
+      ''
+        echo -n "shutting down postgres..."
+      ''
+      ( builtins.readFile ./postgres_stop.sh )
+      ''
+        echo "done."
+      ''
+];
       };
     });
   };
