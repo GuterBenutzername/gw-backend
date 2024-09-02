@@ -20,6 +20,7 @@ create table api.assignments (
     name text not null,
     grade numeric(5, 2) not null default 0,
     weight numeric(5, 2) not null default 0,
+    weight_complex numeric(5,2),
     t boolean not null,
     course_id uuid not null references api.courses (id),
     created_at timestamp with time zone not null default now ()
