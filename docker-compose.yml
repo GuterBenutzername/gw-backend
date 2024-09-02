@@ -1,0 +1,24 @@
+# docker-compose.yml
+services:
+  server:
+    image: postgrest/postgrest
+    ports:
+      - "3000:3000"
+    environment:
+      PGRST_DB_URI: postgres://authenticator:I_KNOW_WHAT_I_AM_DOING@db:5432/gw
+      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000
+      PGRST_DB_SCHEMAS: "api"
+      PGRST_DB_ANON_ROLE: "web_anon"
+    depends_on:
+      - db
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: gw
+      POSTGRES_USER: gw-backend
+      POSTGRES_PASSWORD: I_KNOW_WHAT_I_AM_DOING
+    volumes:
+      - "./initial_migration.sql:/docker-entrypoint-initdb.d/initial_migration.sql:ro"
+    #  - "./pgdata:/var/lib/postgresql/data"
