@@ -1,6 +1,6 @@
-create schema api;
-
 create extension if not exists "uuid-ossp";
+
+create schema api;
 
 create table
     api.assignments (
@@ -14,13 +14,6 @@ create table
             time zone not null default now ()
     );
 
-insert into
-    api.assignments (name, grade, weight, t)
-values
-    ('Daily assignment', 75, 0.15, false),
-    ('The bad quiz :(', 26, 0.25, false),
-    ('Future test', 95, 0.65, true);
-
 create role web_anon nologin;
 
 grant usage on schema api to web_anon;
@@ -32,3 +25,10 @@ select
 create role authenticator noinherit login password 'I_KNOW_WHAT_I_AM_DOING';
 
 grant web_anon to authenticator;
+
+insert into
+    api.assignments (name, grade, weight, t)
+values
+    ('Daily assignment', 75, 0.15, false),
+    ('The bad quiz :(', 26, 0.25, false),
+    ('Future test', 95, 0.65, true);
