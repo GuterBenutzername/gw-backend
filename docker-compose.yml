@@ -1,17 +1,10 @@
 # docker-compose.yml
 services:
-  server:
-    image: postgrest/postgrest
-    ports:
-      - "3000:3000"
-    environment:
-      PGRST_DB_URI: postgres://authenticator:I_KNOW_WHAT_I_AM_DOING@db:5432/gw
-      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000
-      PGRST_DB_SCHEMAS: "api"
-      PGRST_DB_ANON_ROLE: "web_anon"
-    depends_on:
-      - db
   db:
-    build: .
+    image: postgres:latest
     ports:
       - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=trusted_interface
+      - POSTGRES_DB=gw-backend

@@ -3,4 +3,3 @@
 docker compose up
 docker compose down
 docker compose rm
-docker image rm gw-backend-db
