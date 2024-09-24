@@ -8,3 +8,4 @@ CREATE TABLE IF NOT EXISTS app_public.users (
     username text NOT NULL UNIQUE,
     created_at timestamptz NOT NULL DEFAULT now()
 )
+
